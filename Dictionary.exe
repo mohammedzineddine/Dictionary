@@ -1,0 +1,131 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_WORDS 100
+
+// Structure pour stocker une paire de mots
+struct WordPair {
+    char first[100];
+    char second[100];
+};
+
+// Fonction pour échanger deux structures WordPair
+void swap(struct WordPair *a, struct WordPair *b) {
+    struct WordPair temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Fonction pour effectuer un tri à bulles sur le tableau WordPair basé sur le deuxième mot
+void bubbleSort(struct WordPair T[], int n) {
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-i-1; j++) {
+            if (strcmp(T[j].second, T[j+1].second) > 0) {
+                swap(&T[j], &T[j+1]);
+            }
+        }
+    }
+}
+
+// Fonction pour saisir les paires de mots
+void inputWordPairs(struct WordPair dictionary[], int nbrMots) {
+    for (int i = 0; i < nbrMots; i++) {
+        printf("Entrez la paire de mots %d (séparée par un espace) : ", i + 1);
+        scanf("%s %s", dictionary[i].first, dictionary[i].second);
+    }
+}
+
+// Fonction pour afficher le dictionnaire dans l'ordre FR/AN ou AN/FR
+void displayDictionary(struct WordPair dictionary[], int nbrMots, int displayOrder) {
+    printf("Dictionnaire :\n");
+    for (int i = 0; i < nbrMots; i++) {
+        if (displayOrder == 1) {
+            printf("%s %s\n", dictionary[i].first, dictionary[i].second);
+        } else {
+            printf("%s %s\n", dictionary[i].second, dictionary[i].first);
+        }
+    }
+}
+
+// Fonction pour traduire un mot
+void translateWord(struct WordPair dictionary[], int nbrMots) {
+    char wordToTranslate[100];
+    printf("Entrez un mot à traduire : ");
+    scanf("%s", wordToTranslate);
+
+    int found = 0;
+    for (int i = 0; i < nbrMots; i++) {
+        if (strcmp(dictionary[i].first, wordToTranslate) == 0) {
+            printf("Traduction : %s\n", dictionary[i].second);
+            found = 1;
+            break;
+        } else if (strcmp(dictionary[i].second, wordToTranslate) == 0) {
+            printf("Traduction : %s\n", dictionary[i].first);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Mot non trouvé dans le dictionnaire.\n");
+    }
+}
+
+int main() {
+    int nbrMots;
+    printf("Entrez le nombre de paires de mots : ");
+    scanf("%d", &nbrMots);
+
+    struct WordPair dictionary[MAX_WORDS];
+
+    // Saisie des paires de mots
+    inputWordPairs(dictionary, nbrMots);
+
+    int choice;
+    do {
+        // Affichage du menu
+        printf("\nMenu :\n");
+        printf("1. Construire le dictionnaire\n");
+        printf("2. Afficher le dictionnaire FR/AN\n");
+        printf("3. Afficher le dictionnaire AN/FR\n");
+        printf("4. Traduire un mot\n");
+        printf("5. Quitter\n");
+
+        printf("Entrez votre choix (1-5) : ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                // Construction du dictionnaire
+                bubbleSort(dictionary, nbrMots);
+                printf("Dictionnaire construit et trié avec succès.\n");
+                break;
+
+            case 2:
+                // Affichage du dictionnaire FR/AN
+                displayDictionary(dictionary, nbrMots, 1);
+                break;
+
+            case 3:
+                // Affichage du dictionnaire AN/FR
+                displayDictionary(dictionary, nbrMots, 2);
+                break;
+
+            case 4:
+                // Traduction d'un mot
+                translateWord(dictionary, nbrMots);
+                break;
+
+            case 5:
+                // Quitter
+                printf("Programme en cours de fermeture.\n");
+                break;
+
+            default:
+                printf("Choix non valide. Veuillez entrer un nombre entre 1 et 5.\n");
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
